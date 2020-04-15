@@ -1,0 +1,105 @@
+<resources>
+    <string name="app_name">MaskMap</string>
+    <string name="title_activity_maps">Map</string>
+
+    <string name="mask_remain">口罩剩餘</string>
+    <string name="adult">成人</string>
+    <string name="kid">兒童</string>
+    <string name="doc_time">看診時間</string>
+    <string name="note">備註</string>
+    <string name="nearby_pharmacy">附近有%1d間藥局</string>
+    <string name="update_time">更新時間 :  %s</string>
+    <string name="mask_map">口罩地圖</string>
+    <string name="gps_fail">GPS未開啟</string>
+    <string name="goole_map_json">[
+  {
+    "featureType": "landscape.man_made",
+    "stylers": [
+      {
+        "visibility": "off"
+      }
+    ]
+  },
+  {
+    "featureType": "poi.attraction",
+    "stylers": [
+      {
+        "visibility": "off"
+      }
+    ]
+  },
+  {
+    "featureType": "poi.business",
+    "stylers": [
+      {
+        "visibility": "off"
+      }
+    ]
+  },
+  {
+    "featureType": "poi.government",
+    "stylers": [
+      {
+        "visibility": "off"
+      }
+    ]
+  },
+  {
+    "featureType": "poi.park",
+    "elementType": "labels.text",
+    "stylers": [
+      {
+        "visibility": "off"
+      }
+    ]
+  },
+  {
+    "featureType": "poi.place_of_worship",
+    "stylers": [
+      {
+        "visibility": "off"
+      }
+    ]
+  },
+  {
+    "featureType": "poi.school",
+    "stylers": [
+      {
+        "visibility": "off"
+      }
+    ]
+  },
+  {
+    "featureType": "poi.sports_complex",
+    "stylers": [
+      {
+        "visibility": "off"
+      }
+    ]
+  },
+  {
+    "featureType": "road.highway",
+    "stylers": [
+      {
+        "visibility": "off"
+      }
+    ]
+  },
+  {
+    "featureType": "transit.line",
+    "stylers": [
+      {
+        "visibility": "off"
+      }
+    ]
+  },
+  {
+    "featureType": "transit.station",
+    "stylers": [
+      {
+        "visibility": "off"
+      }
+    ]
+  }
+]</string>
+</resources>

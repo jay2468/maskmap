@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav"
+    app:startDestination="@id/welcomeFragment">
+    <fragment
+        android:id="@+id/welcomeFragment"
+        android:name="jay2468.maskmap.fragment.WelcomeFragment"
+        android:label="WelcomeFragment"
+        tools:layout="@layout/welcome">
+        <action
+            android:id="@+id/action_welcomeFragment_to_mapsFragment"
+            app:destination="@id/mapsFragment"
+            app:enterAnim="@anim/im_in_from_right"
+            app:exitAnim="@anim/im_out_to_left"
+            app:popEnterAnim="@anim/im_in_from_left"
+            app:popExitAnim="@anim/im_out_to_right" />
+    </fragment>
+    <fragment
+        android:id="@+id/mapsFragment"
+        android:name="jay2468.maskmap.fragment.MapsFragment"
+        android:label="MapsFragment"
+        tools:layout="@layout/maps">
+        <action
+            android:id="@+id/action_mapsFragment_to_nearbyPharmacyFragment"
+            app:destination="@+id/nearbyPharmacyFragment"
+            app:enterAnim="@anim/im_in_from_left"
+            app:exitAnim="@anim/im_out_to_right"
+            app:popEnterAnim="@anim/im_in_from_right"
+            app:popExitAnim="@anim/im_out_to_left">
+            <argument
+                android:name="entities"
+                app:argType="java.io.Serializable" />
+        </action>
+    </fragment>
+    <fragment
+        android:id="@+id/nearbyPharmacyFragment"
+        android:name="jay2468.maskmap.fragment.NearbyPharmacyFragment"
+        tools:label="NearbyPharmacyFragment"
+        tools:layout="@layout/nearby_pharmacy">
+        <action
+            android:id="@+id/action_nearbyPharmacyFragment_pop_up_to_mapsFragment"
+            app:popUpTo="@id/mapsFragment" />
+        <argument
+            android:name="entities"
+            app:argType="java.io.Serializable" />
+    </fragment>
+</navigation>
