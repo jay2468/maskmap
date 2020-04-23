@@ -7,7 +7,9 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
+import androidx.work.*
 import jay2468.maskmap.R
+import jay2468.maskmap.common.MyWorker
 import jay2468.maskmap.view.CommProgressDialog
 import jay2468.maskmap.viewModel.WelcomeViewModel
 import kotlinx.coroutines.CoroutineScope
@@ -17,17 +19,14 @@ import org.kodein.di.KodeinAware
 import org.kodein.di.android.x.closestKodein
 import org.kodein.di.generic.instance
 import java.lang.Thread.sleep
+import java.util.concurrent.TimeUnit
 
 class WelcomeFragment : Fragment(), KodeinAware {
     override val kodein by closestKodein()
     private val welcomeViewModel: WelcomeViewModel by instance()
     private val commProgressDialog: CommProgressDialog by instance()
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.welcome, container, false)
     }
 
@@ -47,5 +46,11 @@ class WelcomeFragment : Fragment(), KodeinAware {
             })
         }
         welcomeViewModel.insertMaskData()
+        val constraints = Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build()
+        val myWorkRequest = PeriodicWorkRequestBuilder<MyWorker>(15, TimeUnit.MINUTES).run {
+            setInitialDelay(1,TimeUnit.MINUTES)
+            setConstraints(constraints).build()
+        }
+        WorkManager.getInstance(context!!).enqueueUniquePeriodicWork("myUniqueWork",ExistingPeriodicWorkPolicy.KEEP,myWorkRequest)
     }
 }

@@ -28,6 +28,13 @@ android {
     dataBinding {
         enabled = true
     }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_1_8.toString()
+    }
 }
 
 dependencies {
@@ -72,6 +79,9 @@ dependencies {
     // Lifecycles
     implementation "androidx.lifecycle:lifecycle-runtime-ktx:$lifecycle_version"
     implementation "androidx.lifecycle:lifecycle-extensions:$lifecycle_version"
+
+    //WorkManager
+    implementation "androidx.work:work-runtime-ktx:$work_manager_version"
 
     //Retrofit2
     implementation 'com.squareup.retrofit2:retrofit:2.4.0'

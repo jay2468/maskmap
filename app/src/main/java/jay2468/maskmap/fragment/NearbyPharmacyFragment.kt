@@ -39,7 +39,7 @@ class NearbyPharmacyFragment : Fragment(),KodeinAware {
             recyclerView.adapter = NearbyPharmacyAdapter(context!!,arguments as MutableList<MaskEntity>)
         }
 
-        viewModel.getSpecificOne.observe(viewLifecycleOwner, Observer { if(it!=null) findNavController().popBackStack() })
+        viewModel.specificOne.observe(viewLifecycleOwner, Observer { if(it!=null) findNavController().popBackStack() })
 
         return binding.root
     }

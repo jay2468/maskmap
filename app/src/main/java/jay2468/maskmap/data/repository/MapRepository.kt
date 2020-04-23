@@ -8,7 +8,6 @@ import jay2468.maskmap.data.db.entity.MaskEntity
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class MapRepository(private val maskDao: MaskDao) {
     suspend fun distanceMatrix(

@@ -1,8 +1,6 @@
 package jay2468.maskmap
 
 import android.app.Application
-import android.content.Context
-import com.google.android.gms.location.LocationServices
 import jay2468.maskmap.data.db.MaskDatabase
 import jay2468.maskmap.data.repository.MapRepository
 import jay2468.maskmap.viewModel.MapViewModel

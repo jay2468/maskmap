@@ -5,6 +5,7 @@ buildscript {
     ext.lifecycle_version = "2.2.0"
     ext.arch_version = "2.1.0"
     ext.navigation_version = "2.2.1"
+    ext.work_manager_version = "2.3.2"
     repositories {
         google()
         jcenter()

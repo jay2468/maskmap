@@ -11,31 +11,31 @@ import jay2468.maskmap.data.repository.MapRepository
 
 class MapViewModel(@param:NonNull private val mApplication: Application, private val mapRepository: MapRepository) :
     AndroidViewModel(mApplication) {
-    private val address = MutableLiveData<List<MaskEntity>>()
-    val getAddress: LiveData<List<MaskEntity>>
-        get() = address
+    private val _address = MutableLiveData<List<MaskEntity>>()
+    val address: LiveData<List<MaskEntity>>
+        get() = _address
 
-    private val nearByPharmacy = MutableLiveData<Result>()
-    val getNearByPharmacy: LiveData<Result>
-        get() = nearByPharmacy
+    private val _nearByPharmacy = MutableLiveData<Result>()
+    val nearByPharmacy: LiveData<Result>
+        get() = _nearByPharmacy
 
-    private val specificOne = MutableLiveData<MaskEntity?>()
-    val getSpecificOne: LiveData<MaskEntity?>
-        get() = specificOne
+    private val _specificOne = MutableLiveData<MaskEntity?>()
+    val specificOne: LiveData<MaskEntity?>
+        get() = _specificOne
 
     suspend fun findNearbyPharmacy(origins: String, destinations: String, key: String) {
-        mapRepository.distanceMatrix(origins, destinations, key, nearByPharmacy)
+        mapRepository.distanceMatrix(origins, destinations, key, _nearByPharmacy)
     }
 
     fun getAddressByCity(county: String, town: String) {
-        mapRepository.getAdressByCity(county, town, address)
+        mapRepository.getAdressByCity(county, town, _address)
     }
 
     fun getAllAdress() {
-        mapRepository.getAllAdress(address)
+        mapRepository.getAllAdress(_address)
     }
 
     fun setSpecificOne(entity: MaskEntity?){
-        specificOne?.value = entity
+        _specificOne.value = entity
     }
 }

@@ -2,7 +2,6 @@ package jay2468.maskmap.data.db.entity
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import jay2468.maskmap.data.bean.Properties
 import java.io.Serializable
 
 @Entity(tableName = "Mask")
