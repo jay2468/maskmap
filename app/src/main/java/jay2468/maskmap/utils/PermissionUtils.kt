@@ -1,4 +1,4 @@
-package jay2468.maskmap.Utils
+package jay2468.maskmap.utils
 
 import android.Manifest
 import android.content.Context

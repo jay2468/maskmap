@@ -13,4 +13,7 @@ interface MaskDao {
 
     @Query("select * from Mask where address like '%'||:county||'%'||:town||'%'")
     fun getAdressByCity(county: String, town: String): List<MaskEntity>
+
+    @Query("select * from Mask where name = :name")
+    fun getPharmacyByName(name: String): MaskEntity
 }

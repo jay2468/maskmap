@@ -1,35 +1,37 @@
 package jay2468.maskmap.fragment
 
+import jay2468.maskmap.R
 import android.Manifest
 import android.content.pm.PackageManager
-import android.location.*
+import android.location.Address
+import android.location.Geocoder
+import android.location.Location
 import android.os.Bundle
+import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
-import com.google.android.gms.maps.*
-import jay2468.maskmap.R
-
-import org.kodein.di.KodeinAware
-import org.kodein.di.android.x.closestKodein
-import org.kodein.di.generic.instance
-import com.google.android.gms.maps.MapView
-import com.google.android.gms.maps.GoogleMap
 import android.widget.Toast
 import androidx.activity.addCallback
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
+import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.*
+import jay2468.maskmap.utils.PermissionUtils
 import jay2468.maskmap.common.MyLocationListener
 import jay2468.maskmap.common.MyMapObserver
-import jay2468.maskmap.Utils.PermissionUtils
 import jay2468.maskmap.data.db.entity.MaskEntity
 import jay2468.maskmap.databinding.MapsBinding
+import jay2468.maskmap.utils.AnimatorUtil.revealView
 import jay2468.maskmap.view.MarkerDialog
 import jay2468.maskmap.viewModel.MapViewModel
+import org.kodein.di.KodeinAware
+import org.kodein.di.android.x.closestKodein
+import org.kodein.di.generic.instance
 import java.io.Serializable
+
 
 class MapsFragment : Fragment(), OnMapReadyCallback, KodeinAware {
     override val kodein by closestKodein()
@@ -45,27 +47,22 @@ class MapsFragment : Fragment(), OnMapReadyCallback, KodeinAware {
     private val nearbyPharmacyList: MutableList<MaskEntity> = mutableListOf()
     private var marker: Marker? = null
     private lateinit var geoCoder: Geocoder
+    private lateinit var binding: MapsBinding
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val binding = DataBindingUtil.inflate<MapsBinding>(LayoutInflater.from(context), R.layout.maps, container, false)
-        with(binding) {
-            mapView = mapview
-            btnMore.setOnClickListener {
-                val action =
-                        MapsFragmentDirections.actionMapsFragmentToNearbyPharmacyFragment(nearbyPharmacyList as Serializable)
-                findNavController().navigate(action)
-            }
-            btnLocate.setOnClickListener {
-                locate()
-            }
-        }
+        binding = DataBindingUtil.inflate(LayoutInflater.from(context), R.layout.maps, container, false)
+        binding.viewModel = mapViewModel
+        bindUI()
         geoCoder = Geocoder(context)
         lifecycle.addObserver(MyMapObserver(mapView, this))
         mapView.onCreate(savedInstanceState)
         requireActivity().onBackPressedDispatcher.addCallback(this) {
             activity?.finish()
         }
+        return binding.root
+    }
 
+    private fun bindObserve() {
         myLocationListener.getLatLng.observe(viewLifecycleOwner, Observer { latLng ->
             marKer(latLng.latitude, latLng.longitude)
         })
@@ -99,13 +96,61 @@ class MapsFragment : Fragment(), OnMapReadyCallback, KodeinAware {
                     }
                 }
             }
-            Toast.makeText(
-                    context,
-                    resources.getString(R.string.nearby_pharmacy, nearbyPharmacyCount),
-                    Toast.LENGTH_SHORT
-            ).show()
+            Toast.makeText(context, resources.getString(R.string.nearby_pharmacy, nearbyPharmacyCount), Toast.LENGTH_SHORT).show()
         })
-        return binding.root
+
+        mapViewModel.specificOne.observe(viewLifecycleOwner, Observer { maskEntity ->
+            if (maskEntity != null) {
+                with(maskEntity) {
+                    val markerOptions = MarkerOptions()
+                    googleMap.apply {
+                        moveCamera(CameraUpdateFactory.newLatLng(LatLng(Latitude, Longitude)))
+                        animateCamera(CameraUpdateFactory.zoomTo(15.0f))
+                    }
+                    val marker = googleMap.addMarker(
+                            markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.black_pin)).position(
+                                    LatLng(Latitude, Longitude)))
+                    marker.tag = id
+                    entityMap[id] = this
+                    googleMap.setOnMarkerClickListener {
+                        markerDialog.maskEntity = entityMap[it.tag]
+                        markerDialog.show()
+                        true
+                    }
+                    mapViewModel.setSpecificOne(null)
+                }
+            }
+        })
+    }
+
+    private fun bindUI() {
+        with(binding) {
+            mapView = mapview
+
+            btnMore.setOnClickListener {
+                val action =
+                        MapsFragmentDirections.actionMapsFragmentToNearbyPharmacyFragment(nearbyPharmacyList as Serializable)
+                findNavController().navigate(action)
+            }
+
+            btnLocate.setOnClickListener {
+                locate()
+            }
+
+            btnSearchOpen.setOnClickListener {
+                val metric = DisplayMetrics()
+                activity!!.windowManager.defaultDisplay.getMetrics(metric)
+                val width = metric.widthPixels
+                revealView(searchLayout, width, 0, 0f, width.toFloat(), View.VISIBLE)
+            }
+
+            btnClose.setOnClickListener {
+                val metric = DisplayMetrics()
+                activity!!.windowManager.defaultDisplay.getMetrics(metric)
+                val width = metric.widthPixels
+                revealView(searchLayout, width, 0, width.toFloat(), 0f, View.GONE)
+            }
+        }
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
@@ -130,27 +175,9 @@ class MapsFragment : Fragment(), OnMapReadyCallback, KodeinAware {
         }.setOnMapClickListener {
             marKer(it.latitude, it.longitude)
         }
-        if (mapViewModel.specificOne.value != null) {
-            with(mapViewModel.specificOne.value!!) {
-                val markerOptions = MarkerOptions()
-                googleMap.apply {
-                    moveCamera(CameraUpdateFactory.newLatLng(LatLng(Latitude, Longitude)))
-                    animateCamera(CameraUpdateFactory.zoomTo(15.0f))
-                }
-                val marker = googleMap.addMarker(
-                        markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.black_pin)).position(
-                                LatLng(Latitude, Longitude)))
-                marker.tag = id
-                entityMap[id] = this
-                googleMap.setOnMarkerClickListener {
-                    markerDialog.maskEntity = entityMap[it.tag]
-                    markerDialog.show()
-                    true
-                }
-                mapViewModel.setSpecificOne(null)
-            }
-        } else
+        if (mapViewModel.specificOne.value == null)
             locate()
+        bindObserve()
     }
 
     private fun requestLocationPermission() {

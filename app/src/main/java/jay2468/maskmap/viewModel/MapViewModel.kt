@@ -10,7 +10,7 @@ import jay2468.maskmap.data.db.entity.MaskEntity
 import jay2468.maskmap.data.repository.MapRepository
 
 class MapViewModel(@param:NonNull private val mApplication: Application, private val mapRepository: MapRepository) :
-    AndroidViewModel(mApplication) {
+        AndroidViewModel(mApplication) {
     private val _address = MutableLiveData<List<MaskEntity>>()
     val address: LiveData<List<MaskEntity>>
         get() = _address
@@ -31,11 +31,15 @@ class MapViewModel(@param:NonNull private val mApplication: Application, private
         mapRepository.getAdressByCity(county, town, _address)
     }
 
+    fun getPharmacyByName(name: String) {
+        mapRepository.getPharmacyByName(name, _specificOne)
+    }
+
     fun getAllAdress() {
         mapRepository.getAllAdress(_address)
     }
 
-    fun setSpecificOne(entity: MaskEntity?){
+    fun setSpecificOne(entity: MaskEntity?) {
         _specificOne.value = entity
     }
 }
