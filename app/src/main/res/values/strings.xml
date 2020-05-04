@@ -12,6 +12,8 @@
     <string name="mask_map">口罩地圖</string>
     <string name="gps_fail">GPS未開啟</string>
     <string name="search_pharmacy">搜尋藥局</string>
+    <string name="data_download_success">數據下載完成</string>
+    <string name="no_data">查無數據</string>
     <string name="goole_map_json">[
   {
     "featureType": "landscape.man_made",

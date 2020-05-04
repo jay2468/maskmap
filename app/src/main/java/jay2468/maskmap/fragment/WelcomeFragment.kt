@@ -23,8 +23,8 @@ import java.util.concurrent.TimeUnit
 
 class WelcomeFragment : Fragment(), KodeinAware {
     override val kodein by closestKodein()
-    private val welcomeViewModel: WelcomeViewModel by instance()
-    private val commProgressDialog: CommProgressDialog by instance()
+    private val welcomeViewModel: WelcomeViewModel by instance<WelcomeViewModel>()
+    private val commProgressDialog: CommProgressDialog by instance<CommProgressDialog>()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.welcome, container, false)
@@ -32,8 +32,8 @@ class WelcomeFragment : Fragment(), KodeinAware {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        welcomeViewModel.also {
-            it.loading.observe(viewLifecycleOwner, Observer<Boolean> { isLoading ->
+        welcomeViewModel.apply {
+            loading.observe(viewLifecycleOwner, Observer { isLoading ->
                 if (isLoading) {
                     commProgressDialog.show()
                 } else {
@@ -45,7 +45,7 @@ class WelcomeFragment : Fragment(), KodeinAware {
                 }
             })
         }
-        welcomeViewModel.insertMaskData()
+        welcomeViewModel.insertMaskData(true)
         val constraints = Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build()
         val myWorkRequest = PeriodicWorkRequestBuilder<MyWorker>(15, TimeUnit.MINUTES).run {
             setInitialDelay(1,TimeUnit.MINUTES)

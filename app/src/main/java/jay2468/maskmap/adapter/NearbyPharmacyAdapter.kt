@@ -20,8 +20,8 @@ import org.kodein.di.generic.instance
 
 class NearbyPharmacyAdapter(private val context:Context ,private val entities:MutableList<MaskEntity>) : RecyclerView.Adapter<NearbyPharmacyAdapter.ViewHolder>(),KodeinAware {
     override val kodein by closestKodein(context)
-    private val markerDialog: MarkerDialog by instance()
-    private val viewModel: MapViewModel by instance()
+    private val markerDialog: MarkerDialog by instance<MarkerDialog>()
+    private val viewModel: MapViewModel by instance<MapViewModel>()
 
     inner class ViewHolder(private val binding: MaskListBinding) : RecyclerView.ViewHolder(binding.root) {
         lateinit var constraintLayout :ConstraintLayout

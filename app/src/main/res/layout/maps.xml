@@ -5,8 +5,12 @@
     <data>
 
         <variable
-            name="viewModel"
+            name="mapViewModel"
             type="jay2468.maskmap.viewModel.MapViewModel" />
+
+        <variable
+            name="welcomeViewModel"
+            type="jay2468.maskmap.viewModel.WelcomeViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -35,12 +39,22 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <ImageView
+            android:id="@+id/btn_download"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_margin="10dp"
+            android:background="@drawable/download"
+            android:onClick="@{()->welcomeViewModel.insertMaskData(true)}"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
             android:id="@+id/btn_search_open"
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:layout_margin="10dp"
             android:background="@drawable/loupe"
-            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintRight_toLeftOf="@+id/btn_download"
             app:layout_constraintTop_toTopOf="parent" />
 
         <View
@@ -116,7 +130,7 @@
                     android:layout_margin="10dp"
                     android:background="@drawable/loupe"
                     android:clickable="true"
-                    android:onClick="@{()->viewModel.getPharmacyByName(editSearch.getText().toString())}" />
+                    android:onClick="@{()->mapViewModel.getPharmacyByName(editSearch.getText().toString())}" />
             </RelativeLayout>
 
             <Button

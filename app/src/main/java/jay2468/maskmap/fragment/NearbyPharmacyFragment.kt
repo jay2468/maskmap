@@ -21,7 +21,7 @@ import org.kodein.di.generic.instance
 
 class NearbyPharmacyFragment : Fragment(),KodeinAware {
     override val kodein: Kodein by closestKodein()
-    private val viewModel: MapViewModel by instance()
+    private val viewModel: MapViewModel by instance<MapViewModel>()
     private lateinit var binding: NearbyPharmacyBinding
 
     override fun onCreateView(

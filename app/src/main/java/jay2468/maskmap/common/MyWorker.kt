@@ -11,9 +11,9 @@ import org.kodein.di.generic.instance
 
 class MyWorker(context: Context, params: WorkerParameters) : CoroutineWorker(context, params), KodeinAware {
     override val kodein by closestKodein(context)
-    private val welcomeViewModel: WelcomeViewModel by instance()
+    private val welcomeViewModel: WelcomeViewModel by instance<WelcomeViewModel>()
     override suspend fun doWork(): Result = withContext(Dispatchers.IO) {
-        welcomeViewModel.insertMaskData()
+        welcomeViewModel.insertMaskData(false)
         Result.success()
     }
 }

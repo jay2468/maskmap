@@ -10,30 +10,29 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class MapRepository(private val maskDao: MaskDao) {
-    suspend fun distanceMatrix(origins: String, destinations: String, key: String, nearByPharmacy: MutableLiveData<Result>) {
+    suspend fun distanceMatrix(
+        origins: String,
+        destinations: String,
+        key: String,
+        nearByPharmacy: MutableLiveData<Result>
+    ) {
         CoroutineScope(Dispatchers.IO).launch {
             val result =
-                    RetrofitUtil.getRetrofitService().distanceMatrix(origins, destinations, key).await()
+                RetrofitUtil.getRetrofitService().distanceMatrix(origins, destinations, key).await()
             if (result.isSuccessful)
                 nearByPharmacy.postValue(result.body())
         }
     }
 
-    fun getAdressByCity(county: String, town: String, address: MutableLiveData<List<MaskEntity>>) {
-        CoroutineScope(Dispatchers.IO).launch {
-            address.postValue(maskDao.getAdressByCity(county, town))
-        }
+    fun getAdressByCity(county: String, town: String): List<MaskEntity> {
+        return maskDao.getAdressByCity(county, town)
     }
 
-    fun getAllAdress(address: MutableLiveData<List<MaskEntity>>) {
-        CoroutineScope(Dispatchers.IO).launch {
-            address.postValue(maskDao.getAllAdress())
-        }
+    fun getAllAdress(): List<MaskEntity> {
+        return maskDao.getAllAdress()
     }
 
-    fun getPharmacyByName(name: String, specificOne: MutableLiveData<MaskEntity?>) {
-        CoroutineScope(Dispatchers.IO).launch {
-            specificOne.postValue(maskDao.getPharmacyByName(name))
-        }
+    fun getPharmacyByName(name: String): MaskEntity? {
+        return maskDao.getPharmacyByName(name)
     }
 }
