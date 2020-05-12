@@ -103,8 +103,8 @@ class MapsFragment : Fragment(), OnMapReadyCallback, KodeinAware {
 
         with(mapViewModel) {
             address.observe(viewLifecycleOwner, Observer { maskEntities ->
-                if(maskEntities!=null){
-                    nearbyPharmacyList = maskEntities
+                maskEntities?.run{
+                    nearbyPharmacyList = this
                     for (entity in nearbyPharmacyList) {
                         val markerOptions = MarkerOptions()
                         val marker = googleMap.addMarker(
@@ -122,25 +122,23 @@ class MapsFragment : Fragment(), OnMapReadyCallback, KodeinAware {
             })
 
             specificOne.observe(viewLifecycleOwner, Observer { maskEntity ->
-                if (maskEntity != null) {
-                    with(maskEntity) {
-                        val markerOptions = MarkerOptions()
-                        googleMap.apply {
-                            moveCamera(CameraUpdateFactory.newLatLng(LatLng(Latitude, Longitude)))
-                            animateCamera(CameraUpdateFactory.zoomTo(15.0f))
-                        }
-                        val marker = googleMap.addMarker(
-                                markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.black_pin)).position(
-                                        LatLng(Latitude, Longitude)))
-                        marker.tag = id
-                        entityMap[id] = this
-                        googleMap.setOnMarkerClickListener {
-                            markerDialog.maskEntity = entityMap[it.tag]
-                            markerDialog.show()
-                            true
-                        }
-                        mapViewModel.setSpecificOne(null)
+                maskEntity?.run {
+                    val markerOptions = MarkerOptions()
+                    googleMap.apply {
+                        moveCamera(CameraUpdateFactory.newLatLng(LatLng(Latitude, Longitude)))
+                        animateCamera(CameraUpdateFactory.zoomTo(15.0f))
                     }
+                    val marker = googleMap.addMarker(
+                        markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.black_pin)).position(
+                            LatLng(Latitude, Longitude)))
+                    marker.tag = id
+                    entityMap[id] = this
+                    googleMap.setOnMarkerClickListener {
+                        markerDialog.maskEntity = entityMap[it.tag]
+                        markerDialog.show()
+                        true
+                    }
+                    mapViewModel.setSpecificOne(null)
                 }
             })
         }
