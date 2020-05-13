@@ -9,11 +9,11 @@ interface MaskDao {
     fun insert(maskEntity: MaskEntity): Long
 
     @Query("select * from Mask")
-    fun getAllAdress(): List<MaskEntity>
+    suspend fun getAllAdress(): List<MaskEntity>
 
     @Query("select * from Mask where address like '%'||:county||'%'||:town||'%'")
-    fun getAdressByCity(county: String, town: String): List<MaskEntity>
+    suspend fun getAdressByCity(county: String, town: String): List<MaskEntity>
 
     @Query("select * from Mask where name = :name")
-    fun getPharmacyByName(name: String): MaskEntity
+    suspend fun getPharmacyByName(name: String): MaskEntity
 }

@@ -15,8 +15,11 @@ import jay2468.maskmap.data.db.entity.MaskEntity
 import jay2468.maskmap.data.repository.MapRepository
 import kotlinx.coroutines.*
 
-class MapViewModel(@param:NonNull private val mApplication: Application, private val mapRepository: MapRepository) :
-        AndroidViewModel(mApplication) {
+class MapViewModel(
+    @param:NonNull private val mApplication: Application,
+    private val mapRepository: MapRepository
+) :
+    AndroidViewModel(mApplication) {
     private val _address = MutableLiveData<List<MaskEntity>>()
     val address: LiveData<List<MaskEntity>>
         get() = _address
@@ -34,43 +37,39 @@ class MapViewModel(@param:NonNull private val mApplication: Application, private
     }
 
     fun getAddressByCity(county: String, town: String) {
-        _address.postValue(mapRepository.getAdressByCity(county, town))
+        viewModelScope.launch {
+            _address.postValue(mapRepository.getAdressByCity(county, town))
+        }
     }
 
     fun getPharmacyByName(name: String) {
         viewModelScope.launch {
-            withContext(Dispatchers.IO){
-                val result = mapRepository.getPharmacyByName(name)
-                if(result == null)
-                    withContext(Dispatchers.Main){
-                        Toast.makeText(mApplication,mApplication.resources.getString(R.string.no_data),Toast.LENGTH_SHORT).show()
-                    }
-                else
-                    _specificOne.postValue(result)
-            }
+            val result = mapRepository.getPharmacyByName(name)
+            if (result == null)
+                Toast.makeText(mApplication, mApplication.resources.getString(R.string.no_data), Toast.LENGTH_SHORT).show()
+            else
+                _specificOne.postValue(result)
         }
     }
 
     fun getNearByAdress(currentAddress: List<Address>) {
         viewModelScope.launch {
-            withContext(Dispatchers.IO){
-                val addressList = mapRepository.getAllAdress()
-                val result = FloatArray(3)
-                val nearbyPharmacyList :MutableList<MaskEntity> = mutableListOf()
-                var nearbyPharmacyCount = 0
-                for (entity in addressList) {
-                    Location.distanceBetween(currentAddress[0].latitude,
-                        currentAddress[0].longitude, entity.Latitude, entity.Longitude, result)
-                    if (result[0] < 600) {
-                        nearbyPharmacyCount++
-                        nearbyPharmacyList.add(entity)
-                    }
-                }
-                _address.postValue(nearbyPharmacyList)
-                withContext(Dispatchers.Main){
-                    Toast.makeText(mApplication, mApplication.resources.getString(R.string.nearby_pharmacy, nearbyPharmacyCount), Toast.LENGTH_SHORT).show()
+            val addressList = mapRepository.getAllAdress()
+            val result = FloatArray(3)
+            val nearbyPharmacyList: MutableList<MaskEntity> = mutableListOf()
+            var nearbyPharmacyCount = 0
+            for (entity in addressList) {
+                Location.distanceBetween(
+                    currentAddress[0].latitude,
+                    currentAddress[0].longitude, entity.Latitude, entity.Longitude, result
+                )
+                if (result[0] < 600) {
+                    nearbyPharmacyCount++
+                    nearbyPharmacyList.add(entity)
                 }
             }
+            _address.postValue(nearbyPharmacyList)
+            Toast.makeText(mApplication, mApplication.resources.getString(R.string.nearby_pharmacy, nearbyPharmacyCount), Toast.LENGTH_SHORT).show()
         }
     }
 

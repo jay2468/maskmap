@@ -24,15 +24,15 @@ class MapRepository(private val maskDao: MaskDao) {
         }
     }
 
-    fun getAdressByCity(county: String, town: String): List<MaskEntity> {
+    suspend fun getAdressByCity(county: String, town: String): List<MaskEntity> {
         return maskDao.getAdressByCity(county, town)
     }
 
-    fun getAllAdress(): List<MaskEntity> {
+    suspend fun getAllAdress(): List<MaskEntity> {
         return maskDao.getAllAdress()
     }
 
-    fun getPharmacyByName(name: String): MaskEntity? {
+    suspend fun getPharmacyByName(name: String): MaskEntity? {
         return maskDao.getPharmacyByName(name)
     }
 }
